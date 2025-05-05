@@ -16,61 +16,8 @@ DELIMITER ;
 CALL CalcularMediaIdade();
 SELECT renda FROM dados;
 
-SHOW VARIABLES LIKE 'event_scheduler';
 
 
-/*
-EVERY 1 MONTH: Define a recorrência mensal.
-STARTS '2025-05-05 15:20:00': O evento começa no próximo dia 5 de maio 
-de 2025 às 15:20. 
-Ajuste a data para o próximo dia 5 desejado
-(por exemplo, '2025-06-05' para junho).
-ON COMPLETION PRESERVE: Mantém o evento no banco após a execução, 
-para que continue funcionando nos meses seguintes.
-DO CALL CalcularMediaIdade(): Chama a procedure.
-
-
-
-*/
-
-DELIMITER //
-
-CREATE EVENT ExecutarCalcularMediaIdadeOk
-ON SCHEDULE
-    EVERY 1 MONTH
-    STARTS '2025-05-05 15:11:00'
-    ON COMPLETION PRESERVE
-DO
-    CALL CalcularMediaIdade();
-
-DELIMITER ;
-SELECT * FROM mysql.user WHERE Event_priv = 'Y';
-SET GLOBAL event_scheduler = ON;
-SHOW EVENTS;
-SHOW CREATE EVENT ExecutarCalcularMediaIdadeOk;
-SELECT VERSION();
-
-
-
-/* vamos executar */
-SELECT @@time_zone;
-SET time_zone = '-03:00';
-DELIMITER //
-
-CREATE EVENT ExecutarCalcularMediaIdade
-ON SCHEDULE
-    EVERY 1 MONTH
-    STARTS '2025-06-05 15:20:00'
-    ON COMPLETION PRESERVE
-DO
-BEGIN
-    IF DAY(CURRENT_DATE) = 5 THEN
-        CALL CalcularMediaIdade();
-    END IF;
-END//
-
-DELIMITER ;
-SHOW EVENTS;
 CALL CalcularMediaIdade();
 DROP PROCEDURE CalcularMediaRenda;
 DELIMITER //
