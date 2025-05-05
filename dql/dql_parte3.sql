@@ -19,3 +19,4 @@ SELECT ROUND(AVG(Idade),0) FROM dados;
 
 
 
+
